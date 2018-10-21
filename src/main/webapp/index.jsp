@@ -1,7 +1,8 @@
 <%@ page import="pl.mBoniecki.DTO.Task" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <html>
 <head>
     <title>To Do App</title>
@@ -11,11 +12,17 @@
     <script src="webjars/popper.js/1.14.4/popper.min.js"></script>
 </head>
 <body>
-    <h1>To Do List</h1>
 
-    <%!
-        List<Cookie> cookies = new ArrayList<>();
-    %>
+<fmt:setLocale value="${param.lang}"/>
+<fmt:setBundle basename="languages"/>
+
+<a href="index.jsp?lang=pl_PL"><fmt:message key="language.polish"/></a>
+<a href="index.jsp?lang=en_GB"><fmt:message key="language.english"/></a>
+<a href="index.jsp?lang=de_DE"><fmt:message key="language.german"/></a>
+
+<fmt:setBundle basename="labels"/>
+
+    <h1>To Do List</h1>
 
     <%--<%--%>
         <%--Task task = new Task();--%>
@@ -24,11 +31,8 @@
     <%--%>--%>
 
     <form id="contact-form" method="POST" action="index.jsp" role="form">
-
         <div class="messages"></div>
-
         <div class="controls">
-
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -39,8 +43,7 @@
                                class="form-control"
                                placeholder="Task name..."
                                required="required"
-                               data-error="Task name is required"
-                               ">
+                               data-error="Task name is required">
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
@@ -55,8 +58,7 @@
                                   placeholder="Task to do..."
                                   rows="4"
                                   required="required"
-                                  data-error="Task description is required"
-                                  "></textarea>
+                                  data-error="Task description is required"></textarea>
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
@@ -65,47 +67,52 @@
                 </div>
             </div>
         </div>
-
     </form>
 
     <table cellspacing="5" cellpadding="10" border=1>
         <%
-            String task = request.getParameter("task");
-            String message = request.getParameter("message");
+            Cookie[] cookies = request.getCookies();
+            String taskCookie = request.getParameter("task");
+            String messageCookie = request.getParameter("message");
 
-            if (task != null && !task.isEmpty()) {
-                Cookie cookie = new Cookie("task", task);
+            if (taskCookie != null && !taskCookie.isEmpty() &&
+                    messageCookie != null && !messageCookie.isEmpty()) {
+                Cookie cookie = new Cookie("task." + taskCookie, messageCookie);
                 cookie.setMaxAge(60);
                 response.addCookie(cookie);
-                cookies.add(cookie);
-            }
-            if (message != null && !message.isEmpty()) {
-                Cookie cookie = new Cookie("message", message);
-                cookie.setMaxAge(60);
-                response.addCookie(cookie);
-                cookies.add(cookie);
+                response.sendRedirect("index.jsp");
             }
 
-            out.println("<tr>");
-            out.println("<td>");
-            out.print("Name");
-            out.println("</td>");
-            out.println("<td>");
-            out.print("Task");
-            out.println("</td>");
-            out.println("</tr>");
-            for (Cookie c : cookies) {
+            if (cookies.length > 0) {
                 out.println("<tr>");
                 out.println("<td>");
-                out.print(c.getName());
+                out.print("Task name");
                 out.println("</td>");
                 out.println("<td>");
-                out.print(c.getValue());
+                out.print("Task description");
                 out.println("</td>");
                 out.println("</tr>");
+                for (Cookie c : cookies) {
+                    String cookieName = c.getName();
+                    String cookieNamePrefix = cookieName.substring(0, 4);
+                    int prefixCount = 0;
+                    if (cookieNamePrefix.equals("task")) {
+                        prefixCount++;
+                        out.println("<tr>");
+                        out.println("<td>");
+                        out.print(c.getName().substring(5));
+                        out.println("</td>");
+                        out.println("<td>");
+                        out.print(c.getValue());
+                        out.println("</td>");
+                        out.println("</tr>");
+                    }
+//                    if (prefixCount == 0) {
+//                        out.println("No data to display");
+//                    }
+                }
             }
         %>
     </table>
-
 </body>
 </html>

@@ -3,4 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
+    <!--startup list setting: the first file found from the list gets displayed;
+    file name gets removed from the URI eg. local:host8080/index.jsp becomes localhost:8080-->
+    <welcome-file-list>
+        <welcome-file>jstl3.jsp</welcome-file>
+        <welcome-file>jstl4.jsp</welcome-file>
+        <welcome-file>jstl2.jsp</welcome-file>
+        <welcome-file>jstl1.jsp</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>jstl.jsp</welcome-file>
+    </welcome-file-list>
 </web-app>
