@@ -107,9 +107,9 @@
                         out.println("</td>");
                         out.println("</tr>");
                     }
-//                    if (prefixCount == 0) {
-//                        out.println("No data to display");
-//                    }
+                    if (prefixCount == 0) {
+                        out.println("No data to display");
+                    }
                 }
             }
         %>
